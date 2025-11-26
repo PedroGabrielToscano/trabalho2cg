@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Soccer Scene</title>
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+</head>
+
+<body>
+  <a-scene background="color: #87CEEB">
+
+    
+
+    <!-- CAMERA (voar com WASD) -->
+    <a-entity 
+      camera 
+      position="0 20 40"
+      wasd-controls="fly: true; acceleration: 80"
+      look-controls>
+    </a-entity>
+
+    <!-- Luz ambiente -->
+    <a-entity light="type: ambient; intensity: 1"></a-entity>
+
+    <!-- CAMERA -->
+    <a-entity 
+      camera 
+      position="0 20 40"
+      wasd-controls="fly: true; acceleration: 80"
+      look-controls>
+    </a-entity>
+
+    <!-- CAMPO -->
+<a-entity 
+  gltf-model="assets/model/soccer_field.glb"
+  position="0 0 0">
+
+  <!-- JOGADOR 1 -->
+  <a-entity id="player1"
+    gltf-model="assets/model/player.glb"
+    position="-3 0 0"
+    animation-mixer="clip: Man_Run; loop: repeat"
+    player-ai="team: left">
+  </a-entity>
+
+  <!-- JOGADOR 2 -->
+  <a-entity id="player2"
+    gltf-model="assets/model/player.glb"
+    position="5 0 0"
+    rotation="0 180 0"
+    animation-mixer="clip: Man_Run; loop: repeat"
+    player-ai="team: right">
+  </a-entity>
+
+  <!-- BOLA -->
+  <a-sphere id="ball"
+    radius="0.75"
+    color="#ffffff"
+    position="0 0.2 0"
+    ball-ai>
+  </a-sphere>
+
+</a-entity>
+
+
+    <!-- =========================================== -->
+    <!-- RUAS    -->
+    <!-- =========================================== -->
+
+    <!-- LINHA DE CIMA -->
+    <a-entity gltf-model="assets/model/Street_Turn.glb" position="-25 0 -28" rotation="0 0 0"></a-entity><!-- esse ta certo!-->
+    <a-entity gltf-model="assets/model/Street_Straight.glb" position="-18 0 -28" rotation="0 90 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Straight.glb" position="-16 0 -28" rotation="0 90 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Straight.glb" position="-8 0 -28" rotation="0 90 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Straight.glb" position="0 0 -28" rotation="0 90 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Straight.glb" position="16 0 -28" rotation="0 90 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Straight.glb" position="8 0 -28" rotation="0 90 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Straight.glb" position="18 0 -28" rotation="0 90 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Turn.glb" position="25 0 -28" rotation="0 270 0"></a-entity><!--esse ta certo-->
+
+    <!-- LATERAIS -->
+     <a-entity gltf-model="assets/model/Street_Straight.glb" position="-25 0 -20" rotation="0 0 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Straight.glb" position="-25 0 -16" rotation="0 0 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Straight.glb" position="-25 0 -8" rotation="0 0 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Straight.glb" position="-25 0 0" rotation="0 0 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Straight.glb" position="-25 0 8" rotation="0 0 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Straight.glb" position="-25 0 16" rotation="0 0 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Straight.glb" position="-25 0 18" rotation="0 0 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Straight.glb" position="-25 0 20" rotation="0 0 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Straight.glb" position="25 0 -8" rotation="0 0 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Straight.glb" position="25 0 -16" rotation="0 0 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Straight.glb" position="25 0 -20" rotation="0 0 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Straight.glb" position="25 0 0" rotation="0 0 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Straight.glb" position="25 0 8" rotation="0 0 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Straight.glb" position="25 0 16" rotation="0 0 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Straight.glb" position="25 0 18" rotation="0 0 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Straight.glb" position="25 0 20" rotation="0 0 0"></a-entity>
+
+    <!-- LINHA DE BAIXO -->
+    <a-entity gltf-model="assets/model/Street_Turn.glb" position="-25 0 28" rotation="0 90 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Straight.glb" position="-18 0 28" rotation="0 90 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Straight.glb" position="-16 0 28" rotation="0 90 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Straight.glb" position="-8 0 28" rotation="0 90 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Straight.glb" position="0 0 28" rotation="0 90 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Straight.glb" position="8 0 28" rotation="0 90 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Straight.glb" position="16 0 28" rotation="0 90 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Straight.glb" position="18 0 28" rotation="0 90 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Straight.glb" position="-25 0 -16" rotation="0 0 0"></a-entity>
+    <a-entity gltf-model="assets/model/Street_Turn.glb" position="25 0 28" rotation="0 180 0"></a-entity>
+
+  </a-scene>
+</body>
+</html>
