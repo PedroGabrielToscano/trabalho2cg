@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <title>Soccer Scene</title>
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+
+
 </head>
 
 <body>
   <a-scene background="color: #87CEEB">
 
-    
-
-    <!-- CAMERA (voar com WASD) -->
+    <!-- CÂMERA -->
     <a-entity 
       camera 
       position="0 20 40"
@@ -19,48 +19,151 @@
       look-controls>
     </a-entity>
 
-    <!-- Luz ambiente -->
+    <!-- LUZ -->
     <a-entity light="type: ambient; intensity: 1"></a-entity>
 
-    <!-- CAMERA -->
-    <a-entity 
-      camera 
-      position="0 20 40"
-      wasd-controls="fly: true; acceleration: 80"
-      look-controls>
-    </a-entity>
-
     <!-- CAMPO -->
-<a-entity 
-  gltf-model="assets/model/soccer_field.glb"
-  position="0 0 0">
+    <a-entity gltf-model="assets/model/soccer_field.glb" position="0 0 0">
+      </a-entity>
 
-  <!-- JOGADOR 1 -->
-  <a-entity id="player1"
-    gltf-model="assets/model/player.glb"
-    position="-3 0 0"
-    animation-mixer="clip: Man_Run; loop: repeat"
-    player-ai="team: left">
-  </a-entity>
-
-  <!-- JOGADOR 2 -->
-  <a-entity id="player2"
-    gltf-model="assets/model/player.glb"
-    position="5 0 0"
-    rotation="0 180 0"
-    animation-mixer="clip: Man_Run; loop: repeat"
-    player-ai="team: right">
-  </a-entity>
-
-  <!-- BOLA -->
-  <a-sphere id="ball"
-    radius="0.75"
-    color="#ffffff"
-    position="0 0.2 0"
-    ball-ai>
-  </a-sphere>
-
+      <!-- PLAYER 1 -->
+<a-entity id="player1"
+  gltf-model="assets/model/player.glb"
+  position="0 0 24"
+  auto-run
+  move-to-mid="target: #ball; speed: 6; stopDistance: 2">
 </a-entity>
+
+
+
+<script>
+AFRAME.registerComponent("auto-run", {
+  init: function () {
+    this.el.addEventListener("model-loaded", e => {
+
+      // Obtém o modelo carregado
+      const model = this.el.getObject3D("mesh");
+
+      if (!model) return;
+
+      // Achar animações existentes
+      const animations = model.animations || [];
+
+      console.log("ANIMAÇÕES ENCONTRADAS:", animations.map(a => a.name));
+
+      // Pega a animação que contém "Run"
+      const clip = animations.find(a => a.name.includes("Run"));
+
+      if (!clip) {
+        console.warn("Nenhuma animação com 'Run' encontrada.");
+        return;
+      }
+
+      // Ativando o mixer manualmente
+      this.mixer = new THREE.AnimationMixer(model);
+      this.action = this.mixer.clipAction(clip);
+      this.action.play();
+    });
+  },
+  tick: function (t, dt) {
+    if (this.mixer) this.mixer.update(dt / 1000);
+  }
+});
+
+// aplica automaticamente ao player
+document.querySelector("#player1").setAttribute("auto-run", "");
+</script>
+<script>
+AFRAME.registerComponent("move-to-mid", {
+  schema: {
+    target: {type: "selector"},
+    stopDistance: {type: "number", default: 1.5},
+    speed: {type: "number", default: 5},
+    stopped: {type: "boolean", default: false}
+  },
+
+  tick: function (time, delta) {
+    if (this.data.stopped) return; // já chegou no meio, não anda mais
+
+    const player = this.el.object3D;
+    const target = this.data.target.object3D;
+
+    if (!target) return;
+
+    const playerPos = player.position;
+    const targetPos = target.position;
+
+    // direção
+    const dir = new THREE.Vector3();
+    dir.subVectors(targetPos, playerPos);
+    const distance = dir.length();
+
+    // chegou no ponto?
+    if (distance < this.data.stopDistance) {
+      this.data.stopped = true;
+      this.el.emit("arrived-mid");
+      return;
+    }
+
+    // mover
+    dir.normalize();
+    const speed = this.data.speed * (delta / 1000);
+    player.position.addScaledVector(dir, speed);
+
+    // rotacionar
+    player.rotation.y = Math.atan2(dir.x, dir.z);
+  }
+});
+</script>
+<script>
+AFRAME.registerComponent("shoot-ball", {
+  schema: {
+    goal: {type: "vec3"}, 
+    speed: {type: "number", default: 12},
+    active: {type: "boolean", default: false}
+  },
+
+  init: function () {
+    // escuta o player avisar que chegou
+    document.querySelector("#player1").addEventListener("arrived-mid", () => {
+      this.data.active = true;
+    });
+  },
+
+  tick: function (time, delta) {
+    if (!this.data.active) return;
+
+    const ball = this.el.object3D;
+    const goal = new THREE.Vector3(this.data.goal.x, this.data.goal.y, this.data.goal.z);
+
+    const dir = new THREE.Vector3();
+    dir.subVectors(goal, ball.position);
+
+    const dist = dir.length();
+    if (dist < 0.5) {
+      this.data.active = false; // bola chegou no gol
+      return;
+    }
+
+    dir.normalize();
+
+    const move = this.data.speed * (delta / 1000);
+    ball.position.addScaledVector(dir, move);
+  }
+});
+</script>
+
+
+
+      <a-sphere id="ball"
+  radius="0.75"
+  color="#ffffff"
+  position="0 0.2 0"
+  shoot-ball="goal: 0 0 -28; speed: 20">
+</a-sphere>
+
+
+    
 
 
     <!-- =========================================== -->
@@ -96,12 +199,12 @@
     <a-entity gltf-model="assets/model/Street_Straight.glb" position="25 0 18" rotation="0 0 0"></a-entity>
     <a-entity gltf-model="assets/model/Street_Straight.glb" position="25 0 20" rotation="0 0 0"></a-entity>
 
-    <!-- LINHA DE BAIXO -->
+     <!-- LINHA DE BAIXO -->
     <a-entity gltf-model="assets/model/Street_Turn.glb" position="-25 0 28" rotation="0 90 0"></a-entity>
     <a-entity gltf-model="assets/model/Street_Straight.glb" position="-18 0 28" rotation="0 90 0"></a-entity>
     <a-entity gltf-model="assets/model/Street_Straight.glb" position="-16 0 28" rotation="0 90 0"></a-entity>
     <a-entity gltf-model="assets/model/Street_Straight.glb" position="-8 0 28" rotation="0 90 0"></a-entity>
-    <a-entity gltf-model="assets/model/Street_Straight.glb" position="0 0 28" rotation="0 90 0"></a-entity>
+    <a-entity gltf-model="assets/model/StreetT.glb" position="0 0 28" rotation="0 90 0"></a-entity><!-- Aqui é onde faz o T em baixo-->
     <a-entity gltf-model="assets/model/Street_Straight.glb" position="8 0 28" rotation="0 90 0"></a-entity>
     <a-entity gltf-model="assets/model/Street_Straight.glb" position="16 0 28" rotation="0 90 0"></a-entity>
     <a-entity gltf-model="assets/model/Street_Straight.glb" position="18 0 28" rotation="0 90 0"></a-entity>
