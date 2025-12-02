@@ -1,0 +1,120 @@
+/* Estilo profissional para animação */
+body {
+  margin: 0;
+  overflow: hidden;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Overlay de informações */
+#info-overlay {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  color: white;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 15px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+#info-overlay h2 {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+  font-weight: bold;
+  border-bottom: 2px solid #4CAF50;
+  padding-bottom: 5px;
+}
+
+#info-overlay p {
+  margin: 5px 0;
+  line-height: 1.5;
+}
+
+/* Barra de progresso da ação */
+#action-status {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 12px 25px;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: bold;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+#action-status.show {
+  opacity: 1;
+}
+
+/* Loading screen */
+#loading-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  transition: opacity 0.5s ease;
+}
+
+#loading-screen.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-top: 5px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  color: white;
+  font-size: 20px;
+  margin-top: 20px;
+  font-weight: bold;
+}
+
+/* Instruções de controle */
+#controls-info {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  color: white;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-size: 12px;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+#controls-info kbd {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: monospace;
+  margin: 0 2px;
+}

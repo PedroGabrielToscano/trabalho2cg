@@ -4,152 +4,163 @@
   <meta charset="UTF-8">
   <title>Soccer Scene</title>
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-
-  <!-- ========================================================= -->
-  <!-- COMPONENTE FIREWORK (FUNCIONA EM QUALQUER NAVEGADOR)       -->
-  <!-- ========================================================= -->
-  <script>
-    AFRAME.registerComponent('firework', {
-      schema: {
-        delay: {type: 'number', default: 1000}
-      },
-
-      init: function () {
-        const el = this.el;
-
-        setTimeout(() => {
-          for (let i = 0; i < 60; i++) {
-            const spark = document.createElement("a-sphere");
-
-            spark.setAttribute("position", el.getAttribute("position"));
-
-            const colors = ["red", "yellow", "blue", "cyan", "green", "magenta", "orange", "white"];
-            spark.setAttribute("color", colors[Math.floor(Math.random() * colors.length)]);
-            spark.setAttribute("radius", 0.05);
-
-            const dx = (Math.random() - 0.5) * 4;
-            const dy = Math.random() * 4;
-            const dz = (Math.random() - 0.5) * 4;
-
-            spark.setAttribute("animation__move", {
-              property: "position",
-              to: `${dx} ${dy} ${dz}`,
-              dur: 1200,
-              easing: "easeOutQuad"
-            });
-
-            spark.setAttribute("animation__fade", {
-              property: "scale",
-              to: "0 0 0",
-              dur: 1500,
-              easing: "linear",
-              delay: 1000
-            });
-
-            setTimeout(() => spark.remove(), 1700);
-
-            el.sceneEl.appendChild(spark);
-          }
-        }, this.data.delay);
-      }
-    });
-  </script>
-
 </head>
 
 <body>
-  <a-scene background="color: #87CEEB">
+<a-scene background="color: #87CEEB">
 
-    <a-plane
-    position="0 -1.4 0"
-    rotation="-90 0 0"
-    width="200"
-    height="200"
-    color="#4CAF50">
+  <!-- CHÃO -->
+  <a-plane position="0 -1 -2"
+           rotation="-90 0 0"
+           width="200"
+           height="200"
+           color="#228B22">
   </a-plane>
 
-    <!-- ===================================================== -->
-    <!-- CÂMERA E ILUMINAÇÃO                                   -->
-    <!-- ===================================================== -->
-    <a-entity 
-      camera
-      position="0 20 40"
-      wasd-controls="fly: true; acceleration: 80"
-      look-controls>
-    </a-entity>
+  <!-- LUZ -->
+  <a-entity light="type: ambient; intensity: 1.3"></a-entity>
 
-    <a-entity light="type: ambient; intensity: 1"></a-entity>
+  <!-- CÂMERA -->
+  <a-entity camera
+            position="0 22 45"
+            rotation="-20 0 0"
+            wasd-controls="fly: true; acceleration: 80"
+            look-controls>
+  </a-entity>
 
+  <!-- ARQUIBANCADAS -->
+  <a-entity gltf-model="assets/model/StadiumSeats.glb"
+            position="30 1 0"
+            rotation="0 90 0"
+            scale="1 1 1"
+            stay-in-field="minX:-40; maxX:40; minZ:-45; maxZ:45">
+  </a-entity>
 
-    <!-- ===================================================== -->
-    <!-- CAMPO DE FUTEBOL                                      -->
-    <!-- ===================================================== -->
-    <a-entity gltf-model="assets/model/soccer_field.glb" position="0 0 0"></a-entity>
+  <a-entity gltf-model="assets/model/StadiumSeats.glb"
+            position="-30 1 0"
+            rotation="0 -90 0"
+            scale="1 1 1"
+            stay-in-field="minX:-40; maxX:40; minZ:-45; maxZ:45">
+  </a-entity>
 
+  <!-- CAMPO -->
+  <a-entity gltf-model="assets/model/field.glb"
+            position="0 0 0"
+            rotation="0 90 0"
+            scale="2 2 2">
+  </a-entity>
 
-    <!-- ===================================================== -->
-    <!-- JOGADOR 1                                              -->
-    <!-- ===================================================== -->
-    <a-entity id="player1"
-      gltf-model="assets/model/player.glb"
-      position="0 0 24"
-      auto-run
-      move-to-mid="target: #ball; speed: 6; stopDistance: 2">
-    </a-entity>
+  <!-- JOGADOR (BATEDOR) -->
+  <a-entity id="player1"
+            gltf-model="assets/model/player.glb"
+            position="0 0 24"
+            scale="0.2 0.2 0.2"
+            auto-run
+            stay-in-field
+            move-to-mid="target: #ball; speed: 6; stopDistance: 2">
+  </a-entity>
 
+  <!-- GOLEIRO -->
+  <a-entity id="goalkeeper"
+            gltf-model="assets/model/player.glb"
+            position="0 0 -18"
+            scale="0.2 0.2 0.2"
+            rotation="0 180 0"
+            stay-in-field
+            goalkeeper-dive>
+  </a-entity>
 
-    <!-- ===================================================== -->
-    <!-- BOLA                                                   -->
-    <!-- ===================================================== -->
-    <a-sphere id="ball"
-      radius="0.75"
-      position="0 0.2 0"
-      color="#ffffff"
-      shoot-ball="goal: 0 0 -28; speed: 20">
-    </a-sphere>
+  <!-- BOLA -->
+  <a-sphere id="ball"
+            radius="0.75"
+            color="#ffffff"
+            position="0 0.2 0"
+            scale="0.2 0.2 0.2"
+            stay-in-field
+            shoot-ball="goal: 1.75 0 -20.5; speed: 18">
+  </a-sphere>
 
+  <!-- ===================================================
+      LIMITADOR DE MAPA
+  =================================================== -->
+  <script>
+    AFRAME.registerComponent("stay-in-field", {
+      schema: {
+        minX: { default: -30 },
+        maxX: { default: 30 },
+        minZ: { default: -45 },
+        maxZ: { default: 45 },
+        groundY: { default: 0 }
+      },
+      tick() {
+        const p = this.el.object3D.position;
 
+        if (p.x < this.data.minX) p.x = this.data.minX;
+        if (p.x > this.data.maxX) p.x = this.data.maxX;
 
-    <!-- ===================================================== -->
-    <!-- COMPONENTES A-FRAME PERSONALIZADOS                     -->
-    <!-- ===================================================== -->
+        if (p.z < this.data.minZ) p.z = this.data.minZ;
+        if (p.z > this.data.maxZ) p.z = this.data.maxZ;
 
-    <script>
-    /* auto-run */
+        if (p.y < this.data.groundY) p.y = this.data.groundY;
+      }
+    });
+  </script>
+w
+  <!-- ===================================================
+      CORRIDA AUTOMÁTICA
+  =================================================== -->
+  <script>
     AFRAME.registerComponent("auto-run", {
-      init: function () {
-        this.el.addEventListener("model-loaded", e => {
+      init() {
+        this.running = true;
+
+        this.el.addEventListener("model-loaded", () => {
           const model = this.el.getObject3D("mesh");
           if (!model) return;
 
           const animations = model.animations || [];
-          const clip = animations.find(a => a.name.includes("Run"));
-          if (!clip) return;
+          const runClip = animations.find(a => 
+            a.name.toLowerCase().includes("run") ||
+            a.name.toLowerCase().includes("walk")
+          );
+
+          if (!runClip) {
+            console.warn("Animação de corrida não encontrada.");
+            return;
+          }
 
           this.mixer = new THREE.AnimationMixer(model);
-          this.action = this.mixer.clipAction(clip);
+          this.action = this.mixer.clipAction(runClip);
           this.action.play();
+        });
+
+        this.el.addEventListener("arrived-mid", () => {
+          this.running = false;
+          if (this.action) this.action.stop();
         });
       },
 
-      tick: function (t, dt) {
-        if (this.mixer) this.mixer.update(dt / 1000);
+      tick(t, dt) {
+        if (this.mixer && this.running) {
+          this.mixer.update(dt / 1000);
+        }
       }
     });
-    </script>
+  </script>
 
-
-    <script>
-    /* move-to-mid */
+  <!-- ===================================================
+      ANDAR ATÉ A BOLA
+  =================================================== -->
+  <script>
     AFRAME.registerComponent("move-to-mid", {
       schema: {
-        target: {type: "selector"},
-        stopDistance: {type: "number", default: 1.5},
-        speed: {type: "number", default: 5},
-        stopped: {type: "boolean", default: false}
+        target: { type: "selector" },
+        stopDistance: { default: 1.5 },
+        speed: { default: 5 },
+        stopped: { default: false }
       },
 
-      tick: function (time, delta) {
+      tick(time, delta) {
         if (this.data.stopped) return;
 
         const player = this.el.object3D;
@@ -159,133 +170,110 @@
         const dir = new THREE.Vector3();
         dir.subVectors(target.position, player.position);
 
-        const distance = dir.length();
-
-        if (distance < this.data.stopDistance) {
+        const dist = dir.length();
+        if (dist < this.data.stopDistance) {
           this.data.stopped = true;
           this.el.emit("arrived-mid");
           return;
         }
 
         dir.normalize();
-        player.position.addScaledVector(dir, this.data.speed * (delta / 1000));
+        const step = this.data.speed * (delta / 1000);
+        player.position.addScaledVector(dir, step);
         player.rotation.y = Math.atan2(dir.x, dir.z);
       }
     });
-    </script>
+  </script>
 
-
-    <script>
-    /* shoot-ball + fogos */
+  <!-- ===================================================
+      CHUTE DA BOLA
+  =================================================== -->
+  <script>
     AFRAME.registerComponent("shoot-ball", {
       schema: {
-        goal: {type: "vec3"},
-        speed: {type: "number", default: 12},
-        active: {type: "boolean", default: false}
+        goal: { type: "vec3" },
+        speed: { default: 16 },
+        active: { default: false }
       },
 
-      init: function () {
-        document.querySelector("#player1").addEventListener("arrived-mid", () => {
-          this.data.active = true;
-        });
+      init() {
+        document.querySelector("#player1")
+          .addEventListener("arrived-mid", () => {
+            this.data.active = true;
+          });
       },
 
-      tick: function (time, delta) {
+      tick(time, delta) {
         if (!this.data.active) return;
 
         const ball = this.el.object3D;
-        const goal = new THREE.Vector3(this.data.goal.x, this.data.goal.y, this.data.goal.z);
+        const goal = new THREE.Vector3(
+          this.data.goal.x,
+          this.data.goal.y,
+          this.data.goal.z
+        );
 
         const dir = new THREE.Vector3();
         dir.subVectors(goal, ball.position);
 
-        // SE GOL ACONTECER → LIGA OS FOGOS
         if (dir.length() < 0.5) {
           this.data.active = false;
-
-          // Fogos atrás do gol
-          const scene = this.el.sceneEl;
-
-          const fw1 = document.createElement("a-entity");
-          fw1.setAttribute("firework", "delay: 100");
-          fw1.setAttribute("position", "0 6 -32");
-          scene.appendChild(fw1);
-
-          const fw2 = document.createElement("a-entity");
-          fw2.setAttribute("firework", "delay: 400");
-          fw2.setAttribute("position", "-3 5 -30");
-          scene.appendChild(fw2);
-
-          const fw3 = document.createElement("a-entity");
-          fw3.setAttribute("firework", "delay: 700");
-          fw3.setAttribute("position", "3 5 -30");
-          scene.appendChild(fw3);
-
-          const fw4 = document.createElement("a-entity");
-          fw4.setAttribute("firework", "delay: 800");
-          fw4.setAttribute("position", "3 5 -30");
-          scene.appendChild(fw4);
-
-
+          this.el.emit("ball-stopped");
           return;
         }
 
         dir.normalize();
-        ball.position.addScaledVector(dir, this.data.speed * (delta / 1000));
+        const velocidade = this.data.speed * (delta / 1000);
+        ball.position.addScaledVector(dir, velocidade);
       }
     });
-    </script>
+  </script>
 
+  <!-- ===================================================
+      MERGULHO DO GOLEIRO
+      (sempre para o lado oposto do chute)
+  =================================================== -->
+  <script>
+    AFRAME.registerComponent("goalkeeper-dive", {
+      init() {
+        this.start = null;
+        this.diving = false;
+        this.progress = 0;
 
+        document.querySelector("#player1")
+          .addEventListener("arrived-mid", () => {
+            this.start = this.el.object3D.position.clone();
+            this.diving = true;
+            this.progress = 0;
+          });
+      },
 
-    <!-- ===================================================== -->
-    <!-- RUAS / MODELOS DECORATIVOS                            -->
-    <!-- ===================================================== -->
+      tick(t, dt) {
+        if (!this.diving || !this.start) return;
 
-    <!-- (Mantidos iguais ao seu código original) -->
-    <a-entity gltf-model="assets/model/Street_Turn.glb" position="-25 0 -28"></a-entity>
-    <a-entity gltf-model="assets/model/Street_Straight.glb" position="-18 0 -28" rotation="0 90 0"></a-entity>
-    <a-entity gltf-model="assets/model/Street_Straight.glb" position="-16 0 -28" rotation="0 90 0"></a-entity>
-    <a-entity gltf-model="assets/model/Street_Straight.glb" position="-8 0 -28"  rotation="0 90 0"></a-entity>
-    <a-entity gltf-model="assets/model/Street_Straight.glb" position="0 0 -28"   rotation="0 90 0"></a-entity>
-    <a-entity gltf-model="assets/model/Street_Straight.glb" position="8 0 -28"   rotation="0 90 0"></a-entity>
-    <a-entity gltf-model="assets/model/Street_Straight.glb" position="16 0 -28"  rotation="0 90 0"></a-entity>
-    <a-entity gltf-model="assets/model/Street_Straight.glb" position="18 0 -28"  rotation="0 90 0"></a-entity>
-    <a-entity gltf-model="assets/model/Street_Turn.glb"  position="25 0 -28" rotation="0 270 0"></a-entity>
+        const gk = this.el.object3D;
+        this.progress += dt / 1000;
+        if (this.progress > 1) this.progress = 1;
 
-    <!-- LATERAIS -->
-    <a-entity gltf-model="assets/model/Street_Straight.glb" position="-25 0 -20"></a-entity>
-    <a-entity gltf-model="assets/model/Street_Straight.glb" position="-25 0 -16"></a-entity>
-    <a-entity gltf-model="assets/model/Street_Straight.glb" position="-25 0 -8"></a-entity>
-    <a-entity gltf-model="assets/model/Street_Straight.glb" position="-25 0 0"></a-entity>
-    <a-entity gltf-model="assets/model/Street_Straight.glb" position="-25 0 8"></a-entity>
-    <a-entity gltf-model="assets/model/Street_Straight.glb" position="-25 0 16"></a-entity>
-    <a-entity gltf-model="assets/model/Street_Straight.glb" position="-25 0 18"></a-entity>
-    <a-entity gltf-model="assets/model/Street_Straight.glb" position="-25 0 20"></a-entity>
+        // Bola vai pra direita (x +)
+        // Goleiro vai pra esquerda (x -w)
+        const targetX = -2.5;
+        const targetY = 0;
+        const rotZ = Math.PI / 2;
 
-    <a-entity gltf-model="assets/model/Street_Straight.glb" position="25 0 -20"></a-entity>
-    <a-entity gltf-model="assets/model/Street_Straight.glb" position="25 0 -16"></a-entity>
-    <a-entity gltf-model="assets/model/Street_Straight.glb" position="25 0 -8"></a-entity>
-    <a-entity gltf-model="assets/model/Street_Straight.glb" position="25 0 0"></a-entity>
-    <a-entity gltf-model="assets/model/Street_Straight.glb" position="25 0 8"></a-entity>
-    <a-entity gltf-model="assets/model/Street_Straight.glb" position="25 0 16"></a-entity>
-    <a-entity gltf-model="assets/model/Street_Straight.glb" position="25 0 18"></a-entity>
-    <a-entity gltf-model="assets/model/Street_Straight.glb" position="25 0 20"></a-entity>
+        const p = this.easeOut(this.progress);
 
-    <!-- INFERIOR -->
-    <a-entity gltf-model="assets/model/Street_Turn.glb" position="-25 0 28" rotation="0 90 0"></a-entity>
-    <a-entity gltf-model="assets/model/Street_Straight.glb" position="-18 0 28" rotation="0 90 0"></a-entity>
-    <a-entity gltf-model="assets/model/Street_Straight.glb" position="-16 0 28" rotation="0 90 0"></a-entity>
-    <a-entity gltf-model="assets/model/Street_Straight.glb" position="-8 0 28"  rotation="0 90 0"></a-entity>
+        gk.position.x = this.start.x + targetX * p;
+        gk.position.y = this.start.y + targetY * p;
+        gk.rotation.z = rotZ * p;
+      },
 
-    <a-entity gltf-model="assets/model/StreetT.glb" position="0 0 28" rotation="0 90 0"></a-entity>
+      easeOut(t) {
+        return t * (2 - t);
+      }
+    });
+  </script>
 
-    <a-entity gltf-model="assets/model/Street_Straight.glb" position="8 0 28"  rotation="0 90 0"></a-entity>
-    <a-entity gltf-model="assets/model/Street_Straight.glb" position="16 0 28" rotation="0 90 0"></a-entity>
-    <a-entity gltf-model="assets/model/Street_Straight.glb" position="18 0 28" rotation="0 90 0"></a-entity>
-
-    <a-entity gltf-model="assets/model/Street_Turn.glb" position="25 0 28" rotation="0 180 0"></a-entity>
-
-  </a-scene>
+</a-scene>
 </body>
 </html>
