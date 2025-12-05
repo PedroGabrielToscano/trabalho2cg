@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8">
   <title>Soccer Scene</title>
@@ -7,393 +8,723 @@
 </head>
 
 <body>
-<a-scene background="color: #87CEEB">
+  <a-scene background="color: #87CEEB">
 
-  <!-- CHÃO -->
-  <a-plane position="0 -1 -2"
-           rotation="-90 0 0"
-           width="200"
-           height="200"
-           color="#228B22">
-  </a-plane>
+    <!-- CHÃO -->
+    <a-plane position="0 -1 -2" rotation="-90 0 0" width="200" height="200" color="#228B22">
+    </a-plane>
 
-  <!-- LUZ -->
-  <a-entity light="type: ambient; intensity: 1.3"></a-entity>
+    <!-- LUZ -->
+    <a-entity light="type: ambient; intensity: 1.3"></a-entity>
 
-  <!-- CÂMERA -->
-  <a-entity camera
-            position="0 22 45"
-            rotation="-20 0 0"
-            wasd-controls="fly: true; acceleration: 80"
-            look-controls>
-  </a-entity>
+    <!-- CÂMERA -->
+    <a-entity camera position="-14 2 8" rotation="0 0 0" wasd-controls="fly: true; acceleration: 150" look-controls>
+    </a-entity>
 
-  <!-- ARQUIBANCADAS -->
-  <a-entity gltf-model="assets/model/StadiumSeats.glb"
-            position="30 1 0"
-            rotation="0 90 0"
-            scale="1 1 1"
-            stay-in-field="minX:-40; maxX:40; minZ:-45; maxZ:45">
-  </a-entity>
+    <!-- ARQUIBANCADAS -->
+    <a-entity gltf-model="assets/model/StadiumSeats.glb" position="30 1 0" rotation="0 90 0" scale="1 1 1"
+      stay-in-field="minX:-40; maxX:40; minZ:-45; maxZ:45">
+    </a-entity>
 
-  <a-entity gltf-model="assets/model/StadiumSeats.glb"
-            position="-30 1 0"
-            rotation="0 -90 0"
-            scale="1 1 1"
-            stay-in-field="minX:-40; maxX:40; minZ:-45; maxZ:45">
-  </a-entity>
+    <a-entity gltf-model="assets/model/StadiumSeats.glb" position="-30 1 0" rotation="0 -90 0" scale="1 1 1"
+      stay-in-field="minX:-40; maxX:40; minZ:-45; maxZ:45">
+    </a-entity>
 
-  <!-- CAMPO -->
-  <a-entity gltf-model="assets/model/field.glb"
-            position="0 0 0"
-            rotation="0 90 0"
-            scale="2 2 2">
-  </a-entity>
+    <!-- CAMPO -->
+    <a-entity gltf-model="assets/model/field.glb" position="0 0.2 0" rotation="0 90 0" scale="2 2 2">
+    </a-entity>
 
-  <!-- JOGADOR (BATEDOR) -->
-  <a-entity id="player1"
-            gltf-model="assets/model/player.glb"
-            position="0 0 24"
-            scale="0.2 0.2 0.2"
-            auto-run
-            stay-in-field
-            move-to-mid="target: #ball; speed: 6; stopDistance: 2">
-  </a-entity>
+    <!-- JOGADOR (BATEDOR) -->
+    <a-entity id="player1" gltf-model="assets/model/player.glb" position="0 0 18" scale="0.2 0.2 0.2" auto-run
+      stay-in-field move-to-mid="target: #ball; speed: 3; stopDistance: 2" celebration-run>
+    </a-entity>
 
-  <!-- GOLEIRO -->
-  <a-entity id="goalkeeper"
-            gltf-model="assets/model/player.glb"
-            position="0 0 -18"
-            scale="0.2 0.2 0.2"
-            rotation="0 180 0"
-            stay-in-field
-            goalkeeper-dive>
-  </a-entity>
+    <!-- GOLEIRO -->
+    <a-entity id="goalkeeper" gltf-model="assets/model/player.glb" position="0 0 -18" scale="0.2 0.2 0.2" stay-in-field
+      goalkeeper-dive>
+    </a-entity>
 
-  <!-- ÁRBITRO -->
-  <a-entity id="referee"
-            gltf-model="assets/model/referee.glb"
-            position="-14 0 0"
-            rotation="0 90 0"
-            scale="1 0.5 0.5"
-            referee-behavior="target: 0 0 0; speed: 4; stopDistance: 0.6">
-  </a-entity>
+    <!-- ÁRBITRO -->
+    <a-entity id="referee" gltf-model="assets/model/referee.glb" position="-14 0 0" rotation="0 90 0" scale="1 0.5 0.5"
+      referee-behavior="target: 0 0 0; speed: 2; stopDistance: 0.6">
+    </a-entity>
 
-  <!-- BOLA -->
-  <a-sphere id="ball"
-            radius="0.75"
-            color="#ffffff"
-            position="0 0.2 0"
-            scale="0.2 0.2 0.2"
-            stay-in-field
-            shoot-ball="goal: 1.75 0 -20.5; speed: 18">
-  </a-sphere>
+    <!-- BOLA -->
+    <a-sphere id="ball" radius="0.75" color="#ffffff" position="0 0.15 0" scale="0.2 0.2 0.2" stay-in-field
+      shoot-ball="goal: 1.75 0 -20.5; speed: 9" goal-detector>
+    </a-sphere>
 
-  <!-- ===================================================
+    <!-- ESPECTADORES NA ARQUIBANCADA ESQUERDA -->
+    <a-entity id="spectators-left"></a-entity>
+
+    <!-- ESPECTADORES NA ARQUIBANCADA DIREITA -->
+    <a-entity id="spectators-right"></a-entity>
+
+    <!-- VAR -->
+    <a-entity gltf-model="assets/model/monitor.glb" position="-15 0 0" rotation="0 0 0" scale="1 1 1">
+    </a-entity>
+
+    <!-- ===================================================
       LIMITADOR DE MAPA
   =================================================== -->
-  <script>
-    AFRAME.registerComponent("stay-in-field", {
-      schema: {
-        minX: { default: -30 },
-        maxX: { default: 30 },
-        minZ: { default: -45 },
-        maxZ: { default: 45 },
-        groundY: { default: 0 }
-      },
-      tick() {
-        const p = this.el.object3D.position;
+    <script>
+      AFRAME.registerComponent("stay-in-field", {
+        schema: {
+          minX: { default: -30 },
+          maxX: { default: 30 },
+          minZ: { default: -45 },
+          maxZ: { default: 45 },
+          groundY: { default: 0 }
+        },
+        tick() {
+          const p = this.el.object3D.position;
 
-        if (p.x < this.data.minX) p.x = this.data.minX;
-        if (p.x > this.data.maxX) p.x = this.data.maxX;
+          if (p.x < this.data.minX) p.x = this.data.minX;
+          if (p.x > this.data.maxX) p.x = this.data.maxX;
 
-        if (p.z < this.data.minZ) p.z = this.data.minZ;
-        if (p.z > this.data.maxZ) p.z = this.data.maxZ;
+          if (p.z < this.data.minZ) p.z = this.data.minZ;
+          if (p.z > this.data.maxZ) p.z = this.data.maxZ;
 
-        if (p.y < this.data.groundY) p.y = this.data.groundY;
-      }
-    });
-  </script>
+          if (p.y < this.data.groundY) p.y = this.data.groundY;
+        }
+      });
+    </script>
 
-  <!-- ===================================================
+    <!-- ===================================================
       COMPORTAMENTO DO ÁRBITRO
       (anda até o meio-campo, anima e libera o jogador)
   =================================================== -->
-  <script>
-    AFRAME.registerComponent("referee-behavior", {
-      schema: {
-        target: { type: "vec3", default: { x: 0, y: 0, z: 0 } },
-        speed: { default: 4 },
-        stopDistance: { default: 0.5 }
-      },
+    <script>
+      AFRAME.registerComponent("referee-behavior", {
+        schema: {
+          target: { type: "vec3", default: { x: 0, y: 0, z: 0 } },
+          speed: { default: 4 },
+          stopDistance: { default: 0.5 }
+        },
 
-      init() {
-        this.active = true;
-        this.mixer = null;
-        this.walkAction = null;
-        this.waveAction = null;
+        init() {
+          this.state = "looking-at-monitor"; // Estados: "looking-at-monitor", "going", "waving", "returning", "finished"
+          this.startPosition = null;
+          this.mixer = null;
+          this.walkAction = null;
+          this.waveAction = null;
+          this.waveTime = 0;
+          this.waveDuration = 4000; // 4 segundos fazendo o gesto
+          this.lookTime = 0;
+          this.lookDuration = 2000; // 2 segundos olhando para o monitor
 
-        this.el.addEventListener("model-loaded", () => {
-          const model = this.el.getObject3D("mesh");
-          if (!model) return;
+          this.el.addEventListener("model-loaded", () => {
+            const model = this.el.getObject3D("mesh");
+            if (!model) return;
 
-          const animations = model.animations || [];
-          this.mixer = new THREE.AnimationMixer(model);
+            // Salvar posição inicial
+            this.startPosition = this.el.object3D.position.clone();
 
-          // Animação de andar/correr
-          const walkClip =
-            animations.find(a => a.name.toLowerCase().includes("run")) ||
-            animations.find(a => a.name.toLowerCase().includes("walk"));
+            const animations = model.animations || [];
+            this.mixer = new THREE.AnimationMixer(model);
 
-          // Animação de gesto / idle
-          const waveClip =
-            animations.find(a => a.name.toLowerCase().includes("wave")) ||
-            animations.find(a => a.name.toLowerCase().includes("idle"));
+            // Animação de andar/correr
+            const walkClip =
+              animations.find(a => a.name.toLowerCase().includes("run")) ||
+              animations.find(a => a.name.toLowerCase().includes("walk"));
 
-          if (walkClip) {
-            this.walkAction = this.mixer.clipAction(walkClip);
-            this.walkAction.play();
+            // Animação de gesto / idle
+            const waveClip =
+              animations.find(a => a.name.toLowerCase().includes("wave")) ||
+              animations.find(a => a.name.toLowerCase().includes("idle"));
+
+            if (walkClip) {
+              this.walkAction = this.mixer.clipAction(walkClip);
+              // NÃO toca a animação de andar no início (fica parado olhando o monitor)
+            }
+
+            if (waveClip) {
+              this.waveAction = this.mixer.clipAction(waveClip);
+            }
+          });
+        },
+
+        tick(t, dt) {
+          if (this.mixer) {
+            this.mixer.update(dt / 1000);
           }
 
-          if (waveClip) {
-            this.waveAction = this.mixer.clipAction(waveClip);
-          }
-        });
-      },
+          const obj = this.el.object3D;
 
-      tick(t, dt) {
-        if (this.mixer) {
-          this.mixer.update(dt / 1000);
-        }
+          // ESTADO 0: Olhando para o monitor
+          if (this.state === "looking-at-monitor") {
+            this.lookTime += dt;
 
-        if (!this.active) return;
+            // Rotaciona o árbitro para olhar para o monitor (-15, 0, 0)
+            const monitorPos = new THREE.Vector3(-15, 0, 0);
+            const dir = new THREE.Vector3();
+            dir.subVectors(monitorPos, obj.position);
+            obj.rotation.y = Math.atan2(dir.x, dir.z);
 
-        const obj = this.el.object3D;
-        const target = this.data.target;
+            if (this.lookTime >= this.lookDuration) {
+              // Terminou de olhar, agora vai para o meio de campo
+              this.state = "going";
 
-        const dir = new THREE.Vector3(target.x, target.y, target.z);
-        dir.sub(obj.position);
-
-        const dist = dir.length();
-        if (dist < this.data.stopDistance) {
-          // Chegou no meio de campo
-          this.active = false;
-
-          if (this.walkAction) this.walkAction.stop();
-          if (this.waveAction) this.waveAction.play();
-
-          // Evento para sincronizar cena
-          this.el.emit("referee-ready");
-
-          // Libera o jogador para correr
-          const player = document.querySelector("#player1");
-          if (player) {
-            player.emit("start-run");
-          }
-
-          return;
-        }
-
-        dir.normalize();
-        const step = this.data.speed * (dt / 1000);
-        obj.position.addScaledVector(dir, step);
-
-        // Virar o árbitro na direção que está andando
-        obj.rotation.y = Math.atan2(dir.x, dir.z);
-      }
-    });
-  </script>
-
-  <!-- ===================================================
-      CORRIDA AUTOMÁTICA DO JOGADOR
-      (só começa após start-run)
-  =================================================== -->
-  <script>
-    AFRAME.registerComponent("auto-run", {
-      init() {
-        this.running = false;
-        this.mixer = null;
-        this.action = null;
-
-        this.el.addEventListener("model-loaded", () => {
-          const model = this.el.getObject3D("mesh");
-          if (!model) return;
-
-          const animations = model.animations || [];
-          const runClip = animations.find(a =>
-            a.name.toLowerCase().includes("run") ||
-            a.name.toLowerCase().includes("walk")
-          );
-
-          if (!runClip) {
-            console.warn("Animação de corrida não encontrada.");
+              if (this.walkAction) this.walkAction.play();
+            }
             return;
           }
 
-          this.mixer = new THREE.AnimationMixer(model);
-          this.action = this.mixer.clipAction(runClip);
-        });
+          // ESTADO 1: Indo para o meio de campo
+          if (this.state === "going") {
+            const target = this.data.target;
+            const dir = new THREE.Vector3(target.x, target.y, target.z);
+            dir.sub(obj.position);
 
-        // Começa a correr quando o árbitro mandar o sinal
-        this.el.addEventListener("start-run", () => {
-          this.running = true;
-          if (this.action) {
-            this.action.reset();
-            this.action.play();
+            const dist = dir.length();
+            if (dist < this.data.stopDistance) {
+              // Chegou no meio de campo
+              this.state = "waving";
+              this.waveTime = 0;
+
+              if (this.walkAction) this.walkAction.stop();
+              if (this.waveAction) this.waveAction.play();
+
+              this.el.emit("referee-at-center");
+
+              // Faz a galera começar a pular quando o árbitro acena
+              this.el.sceneEl.emit("crowd-celebrate");
+
+              return;
+            }
+
+            dir.normalize();
+            const step = this.data.speed * (dt / 1000);
+            obj.position.addScaledVector(dir, step);
+            obj.rotation.y = Math.atan2(dir.x, dir.z);
           }
-        });
 
-        // Para ao chegar na bola
-        this.el.addEventListener("arrived-mid", () => {
-          this.running = false;
-          if (this.action) this.action.stop();
-        });
-      },
+          // ESTADO 2: Fazendo o gesto no meio de campo
+          else if (this.state === "waving") {
+            this.waveTime += dt;
 
-      tick(t, dt) {
-        if (this.mixer && this.running) {
-          this.mixer.update(dt / 1000);
+            if (this.waveTime >= this.waveDuration) {
+              // Terminou de acenar, volta para a posição inicial
+              this.state = "returning";
+
+              if (this.waveAction) this.waveAction.stop();
+              if (this.walkAction) this.walkAction.play();
+            }
+          }
+
+          // ESTADO 3: Voltando para a posição inicial
+          else if (this.state === "returning") {
+            if (!this.startPosition) return;
+
+            const dir = new THREE.Vector3();
+            dir.subVectors(this.startPosition, obj.position);
+
+            const dist = dir.length();
+            if (dist < this.data.stopDistance) {
+              // Voltou para a posição inicial
+              this.state = "finished";
+
+              if (this.walkAction) this.walkAction.stop();
+
+              // Agora sim libera o jogador para correr
+              const player = document.querySelector("#player1");
+              if (player) {
+                player.emit("start-run");
+              }
+
+              return;
+            }
+
+            dir.normalize();
+            const step = this.data.speed * (dt / 1000);
+            obj.position.addScaledVector(dir, step);
+            obj.rotation.y = Math.atan2(dir.x, dir.z);
+          }
         }
-      }
-    });
-  </script>
+      });
+    </script>
 
-  <!-- ===================================================
+    <!-- ===================================================
+      CORRIDA AUTOMÁTICA DO JOGADOR
+      (só começa após start-run)
+  =================================================== -->
+    <script>
+      AFRAME.registerComponent("auto-run", {
+        init() {
+          this.running = false;
+          this.mixer = null;
+          this.action = null;
+
+          this.el.addEventListener("model-loaded", () => {
+            const model = this.el.getObject3D("mesh");
+            if (!model) return;
+
+            const animations = model.animations || [];
+            const runClip = animations.find(a =>
+              a.name.toLowerCase().includes("run") ||
+              a.name.toLowerCase().includes("walk")
+            );
+
+            if (!runClip) {
+              console.warn("Animação de corrida não encontrada.");
+              return;
+            }
+
+            this.mixer = new THREE.AnimationMixer(model);
+            this.action = this.mixer.clipAction(runClip);
+          });
+
+          // Começa a correr quando o árbitro mandar o sinal
+          this.el.addEventListener("start-run", () => {
+            this.running = true;
+            if (this.action) {
+              this.action.reset();
+              this.action.play();
+            }
+          });
+
+          // Para ao chegar na bola
+          this.el.addEventListener("arrived-mid", () => {
+            this.running = false;
+            if (this.action) this.action.stop();
+          });
+        },
+
+        tick(t, dt) {
+          if (this.mixer && this.running) {
+            this.mixer.update(dt / 1000);
+          }
+        }
+      });
+    </script>
+
+    <!-- ===================================================
       JOGADOR ANDA ATÉ A BOLA
       (só anda depois do start-run)
   =================================================== -->
-  <script>
-    AFRAME.registerComponent("move-to-mid", {
-      schema: {
-        target: { type: "selector" },
-        stopDistance: { default: 1.5 },
-        speed: { default: 5 },
-        stopped: { default: false }
-      },
+    <script>
+      AFRAME.registerComponent("move-to-mid", {
+        schema: {
+          target: { type: "selector" },
+          stopDistance: { default: 1.5 },
+          speed: { default: 5 },
+          stopped: { default: false }
+        },
 
-      init() {
-        this.active = false;
+        init() {
+          this.active = false;
 
-        // Só começa a andar quando receber o start-run
-        this.el.addEventListener("start-run", () => {
-          this.active = true;
-        });
-      },
+          // Só começa a andar quando receber o start-run
+          this.el.addEventListener("start-run", () => {
+            this.active = true;
+          });
+        },
 
-      tick(time, delta) {
-        if (this.data.stopped || !this.active) return;
+        tick(time, delta) {
+          if (this.data.stopped || !this.active) return;
 
-        const player = this.el.object3D;
-        const target = this.data.target.object3D;
-        if (!target) return;
+          const player = this.el.object3D;
+          const target = this.data.target.object3D;
+          if (!target) return;
 
-        const dir = new THREE.Vector3();
-        dir.subVectors(target.position, player.position);
+          const dir = new THREE.Vector3();
+          dir.subVectors(target.position, player.position);
 
-        const dist = dir.length();
-        if (dist < this.data.stopDistance) {
-          this.data.stopped = true;
-          this.el.emit("arrived-mid");
-          return;
+          const dist = dir.length();
+          if (dist < this.data.stopDistance) {
+            this.data.stopped = true;
+            this.el.emit("arrived-mid");
+            return;
+          }
+
+          dir.normalize();
+          const step = this.data.speed * (delta / 1000);
+          player.position.addScaledVector(dir, step);
+          player.rotation.y = Math.atan2(dir.x, dir.z);
         }
+      });
+    </script>
 
-        dir.normalize();
-        const step = this.data.speed * (delta / 1000);
-        player.position.addScaledVector(dir, step);
-        player.rotation.y = Math.atan2(dir.x, dir.z);
-      }
-    });
-  </script>
-
-  <!-- ===================================================
+    <!-- ===================================================
       CHUTE DA BOLA
   =================================================== -->
-  <script>
-    AFRAME.registerComponent("shoot-ball", {
-      schema: {
-        goal: { type: "vec3" },
-        speed: { default: 16 },
-        active: { default: false }
-      },
+    <script>
+      AFRAME.registerComponent("shoot-ball", {
+        schema: {
+          goal: { type: "vec3" },
+          speed: { default: 16 },
+          active: { default: false }
+        },
 
-      init() {
-        document.querySelector("#player1")
-          .addEventListener("arrived-mid", () => {
-            this.data.active = true;
-          });
-      },
+        init() {
+          document.querySelector("#player1")
+            .addEventListener("arrived-mid", () => {
+              this.data.active = true;
+            });
+        },
 
-      tick(time, delta) {
-        if (!this.data.active) return;
+        tick(time, delta) {
+          if (!this.data.active) return;
 
-        const ball = this.el.object3D;
-        const goal = new THREE.Vector3(
-          this.data.goal.x,
-          this.data.goal.y,
-          this.data.goal.z
-        );
+          const ball = this.el.object3D;
+          const goal = new THREE.Vector3(
+            this.data.goal.x,
+            this.data.goal.y,
+            this.data.goal.z
+          );
 
-        const dir = new THREE.Vector3();
-        dir.subVectors(goal, ball.position);
+          const dir = new THREE.Vector3();
+          dir.subVectors(goal, ball.position);
 
-        if (dir.length() < 0.5) {
-          this.data.active = false;
-          this.el.emit("ball-stopped");
-          return;
+          if (dir.length() < 0.5) {
+            this.data.active = false;
+            this.el.emit("ball-stopped");
+            return;
+          }
+
+          dir.normalize();
+          const velocidade = this.data.speed * (delta / 1000);
+          ball.position.addScaledVector(dir, velocidade);
         }
+      });
+    </script>
 
-        dir.normalize();
-        const velocidade = this.data.speed * (delta / 1000);
-        ball.position.addScaledVector(dir, velocidade);
-      }
-    });
-  </script>
-
-  <!-- ===================================================
+    <!-- ===================================================
       MERGULHO DO GOLEIRO
-      (sempre para o lado oposto do chute)
+      (só mergulha se a bola estiver vindo na direção dele)
   =================================================== -->
-  <script>
-    AFRAME.registerComponent("goalkeeper-dive", {
-      init() {
-        this.start = null;
-        this.diving = false;
-        this.progress = 0;
+    <script>
+      AFRAME.registerComponent("goalkeeper-dive", {
+        init() {
+          this.start = null;
+          this.startRotation = null;
+          this.diving = false;
+          this.progress = 0;
+          this.diveDuration = 2.5; // Duração do mergulho em segundos
+          this.shouldDive = false;
 
-        document.querySelector("#player1")
-          .addEventListener("arrived-mid", () => {
-            this.start = this.el.object3D.position.clone();
-            this.diving = true;
-            this.progress = 0;
+          // Escuta quando o jogador chega na bola
+          document.querySelector("#player1")
+            .addEventListener("arrived-mid", () => {
+              // Verifica se a bola está vindo na direção do goleiro
+              const ball = document.querySelector("#ball");
+              const ballPos = ball.object3D.position;
+              const gkPos = this.el.object3D.position;
+
+              // Pega a direção da meta (goal) do componente shoot-ball
+              const shootComponent = ball.components['shoot-ball'];
+              const goalX = shootComponent.data.goal.x;
+
+              // Verifica se a bola vai passar perto do goleiro (range de -4 a 4 em X)
+              const ballDistanceToGK = Math.abs(goalX - gkPos.x);
+
+              // Só mergulha se a bola estiver indo para perto do goleiro
+              if (ballDistanceToGK < 4) {
+                this.shouldDive = true;
+                this.start = this.el.object3D.position.clone();
+                this.startRotation = this.el.object3D.rotation.clone();
+
+                // Decide para qual lado mergulhar baseado na posição da bola
+                this.diveDirection = goalX > gkPos.x ? -1 : 1;
+
+                this.diving = true;
+                this.progress = 0;
+              }
+            });
+        },
+
+        tick(t, dt) {
+          if (!this.diving || !this.start || !this.shouldDive) return;
+
+          const gk = this.el.object3D;
+          this.progress += dt / 1000 / this.diveDuration;
+          if (this.progress > 1) {
+            this.progress = 1;
+            this.diving = false;
+          }
+
+          // Movimento lateral mais contido
+          const targetX = 1.2 * this.diveDirection;  // Mergulho bem curto e realista
+          const targetZ = -0.3;  // Recua um pouco para dentro do gol
+
+          // Curva parabólica para o movimento vertical (sobe e desce)
+          const maxHeight = 0.8;
+          const heightProgress = Math.sin(this.progress * Math.PI);
+          const currentY = maxHeight * heightProgress;
+
+          // Rotação mais natural (gira para o lado e inclina)
+          const rotZ = (Math.PI / 2.2) * -this.diveDirection; // Inclina para o lado do mergulho (invertido para ficar natural)
+          const rotX = -Math.PI / 6;  // Inclina para frente
+
+          const p = this.easeOut(this.progress);
+
+          gk.position.x = this.start.x + targetX * p;
+          gk.position.z = this.start.z + targetZ * p;
+          gk.position.y = this.start.y + currentY;
+
+          // Rotações suaves
+          gk.rotation.x = this.startRotation.x + rotX * p;
+          gk.rotation.y = this.startRotation.y;
+          gk.rotation.z = this.startRotation.z + rotZ * p;
+        },
+
+        easeOut(t) {
+          return 1 - Math.pow(1 - t, 3); // Easing mais suave
+        }
+      });
+    </script>
+
+    <!-- ===================================================
+      DETECTOR DE GOL
+  =================================================== -->
+    <script>
+      AFRAME.registerComponent("goal-detector", {
+        tick() {
+          const ball = this.el.object3D.position;
+
+          // Verifica se a bola passou a linha do gol (Z < -20) e está na área do gol (X entre -3 e 3, Y baixo)
+          if (ball.z < -20 && Math.abs(ball.x) < 3 && ball.y < 2) {
+            // Emite evento de gol apenas uma vez
+            if (!this.goalScored) {
+              this.goalScored = true;
+              this.el.sceneEl.emit("goal-scored");
+              console.log("GOOOOOL!");
+            }
+          }
+        }
+      });
+    </script>
+
+    <!-- ===================================================
+      COMEMORAÇÃO - JOGADOR CORRE AO REDOR DO CAMPO
+  =================================================== -->
+    <script>
+      AFRAME.registerComponent("celebration-run", {
+        init() {
+          this.celebrating = false;
+          this.waypoints = [
+            { x: 12, z: -18 },  // Canto direito inferior
+            { x: 12, z: 18 },   // Canto direito superior
+            { x: -12, z: 18 },  // Canto esquerdo superior
+            { x: -12, z: -18 }, // Canto esquerdo inferior
+            { x: 0, z: -18 }    // Volta para o centro inferior (perto do gol)
+          ];
+          this.currentWaypoint = 0;
+          this.celebrationSpeed = 3; // Velocidade da corrida de comemoração
+          this.mixer = null;
+          this.runAction = null;
+
+          // Escuta o evento de gol
+          this.el.sceneEl.addEventListener("goal-scored", () => {
+            this.celebrating = true;
+            this.currentWaypoint = 0;
+
+            // Para a animação normal e começa a corrida de comemoração
+            const autoRun = this.el.components['auto-run'];
+            if (autoRun && autoRun.action) {
+              autoRun.action.stop();
+            }
+
+            // Desativa o movimento para a bola
+            const moveToMid = this.el.components['move-to-mid'];
+            if (moveToMid) {
+              moveToMid.data.stopped = true;
+              moveToMid.active = false;
+            }
+
+            // Ativa a animação de corrida
+            if (this.runAction) {
+              this.runAction.reset();
+              this.runAction.play();
+            }
           });
-      },
 
-      tick(t, dt) {
-        if (!this.diving || !this.start) return;
+          // Pega a animação de corrida do modelo
+          this.el.addEventListener("model-loaded", () => {
+            const model = this.el.getObject3D("mesh");
+            if (!model) return;
 
-        const gk = this.el.object3D;
-        this.progress += dt / 1000;
-        if (this.progress > 1) this.progress = 1;
+            const animations = model.animations || [];
+            const runClip = animations.find(a =>
+              a.name.toLowerCase().includes("run") ||
+              a.name.toLowerCase().includes("walk")
+            );
 
-        // Bola vai pra direita (x +)
-        // Goleiro vai pra esquerda (x -)
-        const targetX = -2.5;
-        const targetY = 0;
-        const rotZ = Math.PI / 2;
+            if (runClip) {
+              if (!this.mixer) {
+                this.mixer = new THREE.AnimationMixer(model);
+              }
+              this.runAction = this.mixer.clipAction(runClip);
+            }
+          });
+        },
 
-        const p = this.easeOut(this.progress);
+        tick(t, dt) {
+          if (!this.celebrating) return;
 
-        gk.position.x = this.start.x + targetX * p;
-        gk.position.y = this.start.y + targetY * p;
-        gk.rotation.z = rotZ * p;
-      },
+          // Atualiza a animação
+          if (this.mixer) {
+            this.mixer.update(dt / 1000);
+          }
 
-      easeOut(t) {
-        return t * (2 - t);
-      }
-    });
-  </script>
+          const player = this.el.object3D;
+          const target = this.waypoints[this.currentWaypoint];
 
-</a-scene>
+          // Calcula direção para o waypoint atual
+          const dir = new THREE.Vector3(target.x, 0, target.z);
+          dir.sub(player.position);
+
+          const dist = dir.length();
+
+          // Se chegou no waypoint, vai para o próximo
+          if (dist < 1.5) {
+            this.currentWaypoint++;
+
+            // Se completou o circuito, para a comemoração
+            if (this.currentWaypoint >= this.waypoints.length) {
+              this.celebrating = false;
+              if (this.runAction) {
+                this.runAction.stop();
+              }
+              console.log("Comemoração finalizada!");
+              return;
+            }
+          }
+
+          // Move em direção ao waypoint
+          dir.normalize();
+          const step = this.celebrationSpeed * (dt / 1000);
+          player.position.x += dir.x * step;
+          player.position.z += dir.z * step;
+
+          // Rotaciona o jogador na direção do movimento
+          player.rotation.y = Math.atan2(dir.x, dir.z);
+        }
+      });
+    </script>
+
+    <!-- ===================================================
+      CRIADOR DE ESPECTADORES
+  =================================================== -->
+    <script>
+      AFRAME.registerComponent("spectator-jump", {
+        init() {
+          this.jumping = false;
+          this.jumpTime = 0;
+          this.jumpDuration = 0.5; // Duração de cada pulo
+          this.jumpDelay = Math.random() * 0.3; // Delay aleatório para cada espectador
+          this.startY = this.el.object3D.position.y;
+          this.jumpHeight = 0.3 + Math.random() * 0.2; // Altura aleatória do pulo
+          this.totalJumps = 0;
+          this.maxJumps = 3 + Math.floor(Math.random() * 3); // 3 a 5 pulos
+          this.celebrationMode = false; // Modo de comemoração contínua
+
+          // Escuta o evento de comemoração da galera (quando árbitro acena)
+          this.el.sceneEl.addEventListener("crowd-celebrate", () => {
+            // Reseta para pular novamente com número aleatório
+            this.totalJumps = 0;
+            this.maxJumps = 3 + Math.floor(Math.random() * 3);
+            setTimeout(() => {
+              this.jumping = true;
+              this.jumpTime = 0;
+            }, this.jumpDelay * 1000);
+          });
+
+          // Escuta o evento de gol - ativa modo comemoração contínua
+          this.el.sceneEl.addEventListener("goal-scored", () => {
+            this.celebrationMode = true;
+            this.totalJumps = 0;
+            setTimeout(() => {
+              this.jumping = true;
+              this.jumpTime = 0;
+            }, this.jumpDelay * 1000);
+          });
+        },
+
+        tick(t, dt) {
+          if (!this.jumping) return;
+
+          this.jumpTime += dt / 1000;
+
+          if (this.jumpTime >= this.jumpDuration) {
+            // Completa um pulo
+            this.totalJumps++;
+            this.jumpTime = 0;
+
+            // Se estiver em modo comemoração, continua pulando indefinidamente
+            if (this.celebrationMode) {
+              // Não para de pular
+              return;
+            }
+
+            // Se não estiver em modo comemoração, para após o número máximo de pulos
+            if (this.totalJumps >= this.maxJumps) {
+              this.jumping = false;
+              this.el.object3D.position.y = this.startY;
+              return;
+            }
+          }
+
+          // Movimento de pulo (senoidal)
+          const progress = this.jumpTime / this.jumpDuration;
+          const jumpOffset = Math.sin(progress * Math.PI) * this.jumpHeight;
+          this.el.object3D.position.y = this.startY + jumpOffset;
+        }
+      });
+
+      // Cria os espectadores quando a cena carrega
+      AFRAME.registerComponent("populate-spectators", {
+        init() {
+          const leftContainer = document.querySelector("#spectators-left");
+          const rightContainer = document.querySelector("#spectators-right");
+
+          // Arquibancada esquerda (lado negativo de X)
+          for (let row = 0; row < 6; row++) {
+            for (let col = 0; col < 5; col++) {
+              const spectator = document.createElement("a-entity");
+              spectator.setAttribute("gltf-model", "assets/model/player.glb");
+              spectator.setAttribute("scale", "0.2 0.2 0.2");
+
+              const randomRotation = Math.random() * 60 - 30;
+              spectator.setAttribute("rotation", `0 ${90 + randomRotation} 0`);
+
+              spectator.setAttribute(
+                "position",
+                `${-25 - row * 1.5} ${0.15 + row * 0.9} ${-7.5 + col * 3.5}`
+              );
+
+              spectator.setAttribute("spectator-jump", "");
+
+              leftContainer.appendChild(spectator);
+            }
+          }
+
+
+          // Arquibancada direita (lado positivo de X)
+          for (let row = 0; row < 6; row++) {
+            for (let col = 0; col < 5; col++) {
+              const spectator = document.createElement("a-entity");
+              spectator.setAttribute("gltf-model", "assets/model/player.glb");
+              spectator.setAttribute("scale", "0.2 0.2 0.2");
+
+              // Rotação aleatória para variar a direção
+              const randomRotation = Math.random() * 60 - 30; // -30 a +30 graus
+              spectator.setAttribute("rotation", `0 ${-90 + randomRotation} 0`);
+
+              spectator.setAttribute("position", `${25 + row * 1.5} ${0.15 + row * 1} ${-7.5 + col * 3.5}`);
+              spectator.setAttribute("spectator-jump", "");
+
+              rightContainer.appendChild(spectator);
+            }
+          }
+        }
+      });
+    </script>
+
+    <!-- Ativa a população de espectadores -->
+    <a-entity populate-spectators></a-entity>
+
+  </a-scene>
 </body>
+
 </html>
