@@ -70,6 +70,15 @@
             goalkeeper-dive>
   </a-entity>
 
+  <!-- ÁRBITRO -->
+  <a-entity id="referee"
+            gltf-model="assets/model/referee.glb"
+            position="-14 0 0"
+            rotation="0 90 0"
+            scale="1 0.5 0.5"
+            referee-behavior="target: 0 0 0; speed: 4; stopDistance: 0.6">
+  </a-entity>
+
   <!-- BOLA -->
   <a-sphere id="ball"
             radius="0.75"
@@ -105,21 +114,113 @@
       }
     });
   </script>
-w
+
   <!-- ===================================================
-      CORRIDA AUTOMÁTICA
+      COMPORTAMENTO DO ÁRBITRO
+      (anda até o meio-campo, anima e libera o jogador)
   =================================================== -->
   <script>
-    AFRAME.registerComponent("auto-run", {
+    AFRAME.registerComponent("referee-behavior", {
+      schema: {
+        target: { type: "vec3", default: { x: 0, y: 0, z: 0 } },
+        speed: { default: 4 },
+        stopDistance: { default: 0.5 }
+      },
+
       init() {
-        this.running = true;
+        this.active = true;
+        this.mixer = null;
+        this.walkAction = null;
+        this.waveAction = null;
 
         this.el.addEventListener("model-loaded", () => {
           const model = this.el.getObject3D("mesh");
           if (!model) return;
 
           const animations = model.animations || [];
-          const runClip = animations.find(a => 
+          this.mixer = new THREE.AnimationMixer(model);
+
+          // Animação de andar/correr
+          const walkClip =
+            animations.find(a => a.name.toLowerCase().includes("run")) ||
+            animations.find(a => a.name.toLowerCase().includes("walk"));
+
+          // Animação de gesto / idle
+          const waveClip =
+            animations.find(a => a.name.toLowerCase().includes("wave")) ||
+            animations.find(a => a.name.toLowerCase().includes("idle"));
+
+          if (walkClip) {
+            this.walkAction = this.mixer.clipAction(walkClip);
+            this.walkAction.play();
+          }
+
+          if (waveClip) {
+            this.waveAction = this.mixer.clipAction(waveClip);
+          }
+        });
+      },
+
+      tick(t, dt) {
+        if (this.mixer) {
+          this.mixer.update(dt / 1000);
+        }
+
+        if (!this.active) return;
+
+        const obj = this.el.object3D;
+        const target = this.data.target;
+
+        const dir = new THREE.Vector3(target.x, target.y, target.z);
+        dir.sub(obj.position);
+
+        const dist = dir.length();
+        if (dist < this.data.stopDistance) {
+          // Chegou no meio de campo
+          this.active = false;
+
+          if (this.walkAction) this.walkAction.stop();
+          if (this.waveAction) this.waveAction.play();
+
+          // Evento para sincronizar cena
+          this.el.emit("referee-ready");
+
+          // Libera o jogador para correr
+          const player = document.querySelector("#player1");
+          if (player) {
+            player.emit("start-run");
+          }
+
+          return;
+        }
+
+        dir.normalize();
+        const step = this.data.speed * (dt / 1000);
+        obj.position.addScaledVector(dir, step);
+
+        // Virar o árbitro na direção que está andando
+        obj.rotation.y = Math.atan2(dir.x, dir.z);
+      }
+    });
+  </script>
+
+  <!-- ===================================================
+      CORRIDA AUTOMÁTICA DO JOGADOR
+      (só começa após start-run)
+  =================================================== -->
+  <script>
+    AFRAME.registerComponent("auto-run", {
+      init() {
+        this.running = false;
+        this.mixer = null;
+        this.action = null;
+
+        this.el.addEventListener("model-loaded", () => {
+          const model = this.el.getObject3D("mesh");
+          if (!model) return;
+
+          const animations = model.animations || [];
+          const runClip = animations.find(a =>
             a.name.toLowerCase().includes("run") ||
             a.name.toLowerCase().includes("walk")
           );
@@ -131,9 +232,18 @@ w
 
           this.mixer = new THREE.AnimationMixer(model);
           this.action = this.mixer.clipAction(runClip);
-          this.action.play();
         });
 
+        // Começa a correr quando o árbitro mandar o sinal
+        this.el.addEventListener("start-run", () => {
+          this.running = true;
+          if (this.action) {
+            this.action.reset();
+            this.action.play();
+          }
+        });
+
+        // Para ao chegar na bola
         this.el.addEventListener("arrived-mid", () => {
           this.running = false;
           if (this.action) this.action.stop();
@@ -149,7 +259,8 @@ w
   </script>
 
   <!-- ===================================================
-      ANDAR ATÉ A BOLA
+      JOGADOR ANDA ATÉ A BOLA
+      (só anda depois do start-run)
   =================================================== -->
   <script>
     AFRAME.registerComponent("move-to-mid", {
@@ -160,8 +271,17 @@ w
         stopped: { default: false }
       },
 
+      init() {
+        this.active = false;
+
+        // Só começa a andar quando receber o start-run
+        this.el.addEventListener("start-run", () => {
+          this.active = true;
+        });
+      },
+
       tick(time, delta) {
-        if (this.data.stopped) return;
+        if (this.data.stopped || !this.active) return;
 
         const player = this.el.object3D;
         const target = this.data.target.object3D;
@@ -256,7 +376,7 @@ w
         if (this.progress > 1) this.progress = 1;
 
         // Bola vai pra direita (x +)
-        // Goleiro vai pra esquerda (x -w)
+        // Goleiro vai pra esquerda (x -)
         const targetX = -2.5;
         const targetY = 0;
         const rotZ = Math.PI / 2;
