@@ -679,7 +679,7 @@
           const rightContainer = document.querySelector("#spectators-right");
 
           // Arquibancada esquerda (lado negativo de X)
-          for (let row = 0; row < 6; row++) {
+          for (let row = 0; row < 5; row++) {
             for (let col = 0; col < 5; col++) {
               const spectator = document.createElement("a-entity");
               spectator.setAttribute("gltf-model", "assets/model/player.glb");
@@ -701,7 +701,7 @@
 
 
           // Arquibancada direita (lado positivo de X)
-          for (let row = 0; row < 6; row++) {
+          for (let row = 0; row < 5; row++) {
             for (let col = 0; col < 5; col++) {
               const spectator = document.createElement("a-entity");
               spectator.setAttribute("gltf-model", "assets/model/player.glb");
