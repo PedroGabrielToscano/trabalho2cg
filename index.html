@@ -25,7 +25,7 @@
     </a-entity>
 
     <a-entity gltf-model="assets/model/StadiumSeats.glb" position="-34.5 4 0" rotation="0 -90 0" scale="1.5 1.5 1.5"
-      stay-in-field="minX:-40; maxX:40; minZ:-45; maxZ:45">a
+      stay-in-field="minX:-40; maxX:40; minZ:-45; maxZ:45">
     </a-entity>
 
     <!-- CAMPO -->
@@ -77,11 +77,134 @@
       shoot-ball="goal: 1.75 0 -20.5; speed: 9" goal-detector>
     </a-sphere>
 
-    <!-- ESPECTADORES NA ARQUIBANCADA ESQUERDA -->
-    <a-entity id="spectators-left"></a-entity>
+    <!-- ESPECTADORES NA ARQUIBANCADA ESQUERDA (MANUAIS) -->
+    <a-entity id="spectators-left">
+      <!-- row 0 -->
+      <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+                rotation="0 90 0" position="-28 2.75 -7.5" spectator-jump></a-entity>
+      <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+                rotation="0 90 0" position="-28 2.75 -4.0" spectator-jump></a-entity>
+      <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+                rotation="0 90 0" position="-28 2.75 -0.5" spectator-jump></a-entity>
+      <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+                rotation="0 90 0" position="-28 2.75 3.0" spectator-jump></a-entity>
+      <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+                rotation="0 90 0" position="-28 2.75 6.5" spectator-jump></a-entity>
 
-    <!-- ESPECTADORES NA ARQUIBANCADA DIREITA -->
-    <a-entity id="spectators-right"></a-entity>
+      <!-- row 1 -->
+      <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+                rotation="0 90 0" position="-29 3.65 -7.5" spectator-jump></a-entity>
+      <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+                rotation="0 90 0" position="-29 3.65 -4.0" spectator-jump></a-entity>
+      <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+                rotation="0 90 0" position="-29 3.65 -0.5" spectator-jump></a-entity>
+      <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+                rotation="0 90 0" position="-29 3.65 3.0" spectator-jump></a-entity>
+      <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+                rotation="0 90 0" position="-29 3.65 6.5" spectator-jump></a-entity>
+
+      <!-- row 2 -->
+      <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+                rotation="0 90 0" position="-30 4.65 -7.5" spectator-jump></a-entity>
+      <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+                rotation="0 90 0" position="-30 4.65 -4.0" spectator-jump></a-entity>
+      <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+                rotation="0 90 0" position="-30 4.65 -0.5" spectator-jump></a-entity>
+      <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+                rotation="0 90 0" position="-30 4.65 3.0" spectator-jump></a-entity>
+      <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+                rotation="0 90 0" position="-30 4.65 6.5" spectator-jump></a-entity>
+
+      <!-- row 3 -->
+      <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+                rotation="0 90 0" position="-32 5.68 -7.5" spectator-jump></a-entity>
+      <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+                rotation="0 90 0" position="-32 5.68 -4.0" spectator-jump></a-entity>
+      <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+                rotation="0 90 0" position="-32 5.68 -0.5" spectator-jump></a-entity>
+      <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+                rotation="0 90 0" position="-32 5.68 3.0" spectator-jump></a-entity>
+      <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+                rotation="0 90 0" position="-32 5.68 6.5" spectator-jump></a-entity>
+
+      <!-- row 4 -->
+      <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+                rotation="0 90 0" position="-34 6.75 -7.5" spectator-jump></a-entity>
+      <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+                rotation="0 90 0" position="-34 6.75 -4.0" spectator-jump></a-entity>
+      <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+                rotation="0 90 0" position="-34 6.75 -0.5" spectator-jump></a-entity>
+      <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+                rotation="0 90 0" position="-34 6.75 3.0" spectator-jump></a-entity>
+      <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+                rotation="0 90 0" position="-34 6.75 6.5" spectator-jump></a-entity>
+    </a-entity>
+
+    <!-- ESPECTADORES NA ARQUIBANCADA DIREITA (MANUAIS) -->
+    <a-entity id="spectators-right">
+
+  <!-- row 0 -->
+  <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+            rotation="0 -90 0" position="28 2.75 -7.5" spectator-jump></a-entity>
+  <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+            rotation="0 -90 0" position="28 2.75 -4.0" spectator-jump></a-entity>
+  <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+            rotation="0 -90 0" position="28 2.75 -0.5" spectator-jump></a-entity>
+  <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+            rotation="0 -90 0" position="28 2.75 3.0" spectator-jump></a-entity>
+  <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+            rotation="0 -90 0" position="28 2.75 6.5" spectator-jump></a-entity>
+
+  <!-- row 1 -->
+  <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+            rotation="0 -90 0" position="29 3.65 -7.5" spectator-jump></a-entity>
+  <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+            rotation="0 -90 0" position="29 3.65 -4.0" spectator-jump></a-entity>
+  <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+            rotation="0 -90 0" position="29 3.65 -0.5" spectator-jump></a-entity>
+  <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+            rotation="0 -90 0" position="29 3.65 3.0" spectator-jump></a-entity>
+  <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+            rotation="0 -90 0" position="29 3.65 6.5" spectator-jump></a-entity>
+
+  <!-- row 2 -->
+  <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+            rotation="0 -90 0" position="30 4.65 -7.5" spectator-jump></a-entity>
+  <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+            rotation="0 -90 0" position="30 4.65 -4.0" spectator-jump></a-entity>
+  <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+            rotation="0 -90 0" position="30 4.65 -0.5" spectator-jump></a-entity>
+  <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+            rotation="0 -90 0" position="30 4.65 3.0" spectator-jump></a-entity>
+  <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+            rotation="0 -90 0" position="30 4.65 6.5" spectator-jump></a-entity>
+
+  <!-- row 3 -->
+  <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+            rotation="0 -90 0" position="32 5.68 -7.5" spectator-jump></a-entity>
+  <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+            rotation="0 -90 0" position="32 5.68 -4.0" spectator-jump></a-entity>
+  <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+            rotation="0 -90 0" position="32 5.68 -0.5" spectator-jump></a-entity>
+  <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+            rotation="0 -90 0" position="32 5.68 3.0" spectator-jump></a-entity>
+  <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+            rotation="0 -90 0" position="32 5.68 6.5" spectator-jump></a-entity>
+
+  <!-- row 4 -->
+  <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+            rotation="0 -90 0" position="34 6.75 -7.5" spectator-jump></a-entity>
+  <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+            rotation="0 -90 0" position="34 6.75 -4.0" spectator-jump></a-entity>
+  <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+            rotation="0 -90 0" position="34 6.75 -0.5" spectator-jump></a-entity>
+  <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+            rotation="0 -90 0" position="34 6.75 3.0" spectator-jump></a-entity>
+  <a-entity gltf-model="assets/model/player.glb" scale="0.2 0.2 0.2"
+            rotation="0 -90 0" position="34 6.75 6.5" spectator-jump></a-entity>
+
+</a-entity>
+
 
     <!-- VAR (monitor único com vídeo) -->
     <a-entity id="var-monitor" position="-15 0 0" rotation="0 0 0" scale="1 1 1" var-video-control>
@@ -152,7 +275,7 @@
 
     <!-- ===================================================
       LIMITADOR DE MAPA
-  =================================================== -->
+    =================================================== -->
     <script>
       AFRAME.registerComponent("stay-in-field", {
         schema: {
@@ -218,7 +341,7 @@
     <!-- ===================================================
       COMPORTAMENTO DO ÁRBITRO
       (anda até o meio-campo, anima e libera o jogador)
-  =================================================== -->
+    =================================================== -->
     <script>
       AFRAME.registerComponent("referee-behavior", {
         schema: {
@@ -378,7 +501,7 @@
     <!-- ===================================================
       CORRIDA AUTOMÁTICA DO JOGADOR
       (só começa após start-run)
-  =================================================== -->
+    =================================================== -->
     <script>
       AFRAME.registerComponent("auto-run", {
         init() {
@@ -432,7 +555,7 @@
     <!-- ===================================================
       JOGADOR ANDA ATÉ A BOLA
       (só anda depois do start-run)
-  =================================================== -->
+    =================================================== -->
     <script>
       AFRAME.registerComponent("move-to-mid", {
         schema: {
@@ -478,7 +601,7 @@
 
     <!-- ===================================================
       CHUTE DA BOLA
-  =================================================== -->
+    =================================================== -->
     <script>
       AFRAME.registerComponent("shoot-ball", {
         schema: {
@@ -523,7 +646,7 @@
     <!-- ===================================================
       MERGULHO DO GOLEIRO
       (só mergulha se a bola estiver vindo na direção dele)
-  =================================================== -->
+    =================================================== -->
     <script>
       AFRAME.registerComponent("goalkeeper-dive", {
         init() {
@@ -607,7 +730,7 @@
 
     <!-- ===================================================
       DETECTOR DE GOL
-  =================================================== -->
+    =================================================== -->
     <script>
       AFRAME.registerComponent("goal-detector", {
         tick() {
@@ -628,7 +751,7 @@
 
     <!-- ===================================================
       COMEMORAÇÃO - JOGADOR CORRE AO REDOR DO CAMPO
-  =================================================== -->
+    =================================================== -->
     <script>
       AFRAME.registerComponent("celebration-run", {
         init() {
@@ -735,8 +858,8 @@
     </script>
 
     <!-- ===================================================
-      CRIADOR DE ESPECTADORES
-  =================================================== -->
+      CRIADOR DE ESPECTADORES (SÓ O COMPORTAMENTO DE PULO)
+    =================================================== -->
     <script>
       AFRAME.registerComponent("spectator-jump", {
         init() {
@@ -802,66 +925,7 @@
           this.el.object3D.position.y = this.startY + jumpOffset;
         }
       });
-
-      // Cria os espectadores quando a cena carrega
-      AFRAME.registerComponent("populate-spectators", {
-        init() {
-          const leftContainer = document.querySelector("#spectators-left");
-          const rightContainer = document.querySelector("#spectators-right");
-
-          // Arquibancada esquerda (lado negativo de X, posição -34.5)
-          // As filas vão subindo (Y) e recuando (X negativo)
-          for (let row = 0; row < 7; row++) {
-            for (let col = 0; col < 12; col++) {
-              const spectator = document.createElement("a-entity");
-              spectator.setAttribute("gltf-model", "assets/model/player.glb");
-              spectator.setAttribute("scale", "0.2 0.2 0.2");
-
-              const randomRotation = Math.random() * 40 - 20;
-              spectator.setAttribute("rotation", `0 ${90 + randomRotation} 0`);
-
-              // X: recua conforme a fila (mais negativo)
-              // Y: sobe conforme a fila
-              // Z: distribui ao longo do comprimento da arquibancada
-              spectator.setAttribute(
-                "position",
-                `${-35.5 - row * 0.8} ${2 + row * 0.7} ${-17 + col * 2.8}`
-              );
-
-              spectator.setAttribute("spectator-jump", "");
-
-              leftContainer.appendChild(spectator);
-            }
-          }
-
-
-          // Arquibancada direita (lado positivo de X, posição 80)
-          // As filas vão subindo (Y) e avançando (X positivo)
-          for (let row = 0; row < 7; row++) {
-            for (let col = 0; col < 12; col++) {
-              const spectator = document.createElement("a-entity");
-              spectator.setAttribute("gltf-model", "assets/model/player.glb");
-              spectator.setAttribute("scale", "0.2 0.2 0.2");
-
-              // Rotação aleatória para variar a direção
-              const randomRotation = Math.random() * 40 - 20;
-              spectator.setAttribute("rotation", `0 ${-90 + randomRotation} 0`);
-
-              // X: avança conforme a fila (mais positivo)
-              // Y: sobe conforme a fila
-              // Z: distribui ao longo do comprimento da arquibancada
-              spectator.setAttribute("position", `${80.5 + row * 0.8} ${2 + row * 0.7} ${-17 + col * 2.8}`);
-              spectator.setAttribute("spectator-jump", "");
-
-              rightContainer.appendChild(spectator);
-            }
-          }
-        }
-      });
     </script>
-
-    <!-- Ativa a população de espectadores -->
-    <a-entity populate-spectators></a-entity>
 
   </a-scene>
 </body>
